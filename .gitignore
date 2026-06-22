@@ -41,3 +41,8 @@ crashlytics-build.properties
 
 # Editor-based HTTP Client requests
 idea/httpRequests/
+
+# logare ftp si fisiere descarcate
+config.txt
+*.nc
+*.nc.gz
