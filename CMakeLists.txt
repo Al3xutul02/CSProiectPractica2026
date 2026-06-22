@@ -1,39 +1,42 @@
-cmake_minimum_required(VERSION 4.2)
-project(CSProiectPractica2026)
+cmake_minimum_required(VERSION 3.25)
+
+project(CSProiectPractica2026 LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
-set(BUILD_SHARED_LIBS OFF CACHE INTERNAL "")
+# ------------------------------------------------------------
+# Dependencies (provided by vcpkg, see vcpkg.json)
+#
+# The vcpkg toolchain file is supplied via CMakePresets.json
+# (CMAKE_TOOLCHAIN_FILE -> $VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake),
+# so every find_package below resolves against the vcpkg install tree.
+# ------------------------------------------------------------
 
-include(FetchContent)
+find_package(CURL CONFIG REQUIRED)
+find_package(ZLIB REQUIRED)
 
-FetchContent_Declare(
-        zlib
-        URL https://github.com/madler/zlib/archive/refs/tags/v1.3.1.zip
-)
-FetchContent_MakeAvailable(zlib)
+# netcdf-cxx4 pulls in netcdf-c and HDF5 transitively.
+find_package(netCDFCxx CONFIG REQUIRED)
 
-set(BUILD_CURL_EXE OFF CACHE INTERNAL "")
-set(CURL_USE_LIBPSL OFF CACHE INTERNAL "")
-set(CURL_STATICLIB ON CACHE INTERNAL "")
+# ------------------------------------------------------------
+# Application
+# ------------------------------------------------------------
 
-FetchContent_Declare(
-        curl
-        URL https://github.com/curl/curl/archive/refs/tags/curl-8_7_1.zip
-)
-FetchContent_MakeAvailable(curl)
-
-set(SOURCES
+add_executable(CSProiectPractica2026
         main.cpp
         src/DataDownloader.cpp
 )
 
-add_executable(CSProiectPractica2026 ${SOURCES})
+target_include_directories(CSProiectPractica2026
+        PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
+)
 
-
-target_compile_definitions(CSProiectPractica2026 PRIVATE CURL_STATICLIB)
-
-target_include_directories(CSProiectPractica2026 PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
-
-target_link_libraries(CSProiectPractica2026 PRIVATE libcurl zlibstatic ws2_32 wldap32 crypt32)
+target_link_libraries(CSProiectPractica2026
+        PRIVATE
+        CURL::libcurl
+        ZLIB::ZLIB
+        netCDF::netcdf-cxx4
+)

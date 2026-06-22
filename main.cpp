@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <netcdf>
 #include "DataDownloader.h"
 
 int main() {

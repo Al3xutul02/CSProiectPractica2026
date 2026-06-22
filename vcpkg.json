@@ -1,0 +1,11 @@
+{
+  "name": "csproiectpractica2026",
+  "version": "0.1.0",
+  "dependencies": [
+    "curl",
+    "zlib",
+    "hdf5",
+    "netcdf-c",
+    "netcdf-cxx4"
+  ]
+}
